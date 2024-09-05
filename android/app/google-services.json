@@ -1,32 +1,13 @@
 {
   "project_info": {
-    "project_number": "386319475258",
-    "project_id": "otpverification-66200",
-    "storage_bucket": "otpverification-66200.appspot.com"
+    "project_number": "1077169648847",
+    "project_id": "otpauth-36829",
+    "storage_bucket": "otpauth-36829.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:386319475258:android:7de6c5c84f4dfaf94e8b03",
-        "android_client_info": {
-          "package_name": "com.example.otp_auth"
-        }
-      },
-      "oauth_client": [],
-      "api_key": [
-        {
-          "current_key": "AIzaSyBNIikIB-hf60xHMCVCeferY9Q1sEe9ya8"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": []
-        }
-      }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:386319475258:android:5200b8acd2ed46404e8b03",
+        "mobilesdk_app_id": "1:1077169648847:android:3f53a8637e4de40cb6b3ba",
         "android_client_info": {
           "package_name": "com.example.otp_authentication"
         }
@@ -34,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyBNIikIB-hf60xHMCVCeferY9Q1sEe9ya8"
+          "current_key": "AIzaSyDLYHnZl6goWImqyRH7fMbWCV9oqJgGXdg"
         }
       ],
       "services": {

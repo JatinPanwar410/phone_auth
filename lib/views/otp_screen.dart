@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -7,9 +6,9 @@ import 'package:flutter/services.dart';
 class OtpScreen extends StatefulWidget {
   OtpScreen(
       {super.key,
-      required this.number,
-      this.startCountdown = false,
-      required this.verificationid});
+        required this.number,
+        this.startCountdown = false,
+        required this.verificationid});
 
   final String number;
   final bool startCountdown;
@@ -31,7 +30,7 @@ class _OtpScreenState extends State<OtpScreen> {
               SizedBox(
                   height: MediaQuery.of(context).size.height * 0.44,
                   width: MediaQuery.of(context).size.width * 0.9,
-                  child: mainCard(widget: widget))
+                  child: MainCard(widget: widget))
             ],
           ),
         ),
@@ -40,8 +39,8 @@ class _OtpScreenState extends State<OtpScreen> {
   }
 }
 
-class mainCard extends StatefulWidget {
-  const mainCard({
+class MainCard extends StatefulWidget {
+  const MainCard({
     super.key,
     required this.widget,
   });
@@ -49,26 +48,25 @@ class mainCard extends StatefulWidget {
   final OtpScreen widget;
 
   @override
-  State<mainCard> createState() => _mainCardState();
+  State<MainCard> createState() => _MainCardState();
 }
 
-class _mainCardState extends State<mainCard> {
-  List<bool> flag = [
-    false,
-    false,
-    false,
-    false,
-  ];
+class _MainCardState extends State<MainCard> {
+  List<bool> flag = [false, false, false, false, false, false];
 
   var firstController = TextEditingController();
   var secondController = TextEditingController();
   var thirdController = TextEditingController();
   var fourthController = TextEditingController();
+  var fifthController = TextEditingController();
+  var sixthController = TextEditingController();
 
   FocusNode firstFocus = FocusNode();
   FocusNode secondFocus = FocusNode();
   FocusNode thirdFocus = FocusNode();
   FocusNode fourthFocus = FocusNode();
+  FocusNode fifthFocus = FocusNode();
+  FocusNode sixthFocus = FocusNode();
 
   int secondsRemaining = 60;
   bool enableResend = false;
@@ -82,12 +80,24 @@ class _mainCardState extends State<mainCard> {
     }
   }
 
+  @override
+  void dispose() {
+    countdownTimer?.cancel();
+    firstController.dispose();
+    secondController.dispose();
+    thirdController.dispose();
+    fourthController.dispose();
+    fifthController.dispose();
+    sixthController.dispose();
+    super.dispose();
+  }
+
   void startCountdown() {
     setState(() {
       secondsRemaining = 60;
       enableResend = false;
     });
-    countdownTimer = Timer.periodic(Duration(seconds: 1), (Timer timer) {
+    countdownTimer = Timer.periodic(const Duration(seconds: 1), (Timer timer) {
       if (secondsRemaining > 0) {
         setState(() {
           secondsRemaining--;
@@ -155,8 +165,22 @@ class _mainCardState extends State<mainCard> {
               otpTextField(
                 controller: fourthController,
                 focusNode: fourthFocus,
+                nextFocusNode: fifthFocus,
                 prevFocusNode: thirdFocus,
                 flagIndex: 3,
+              ),
+              otpTextField(
+                controller: fifthController,
+                focusNode: fifthFocus,
+                nextFocusNode: sixthFocus,
+                prevFocusNode: fourthFocus,
+                flagIndex: 4,
+              ),
+              otpTextField(
+                controller: sixthController,
+                focusNode: sixthFocus,
+                prevFocusNode: fifthFocus,
+                flagIndex: 5,
               ),
             ],
           ),
@@ -175,20 +199,33 @@ class _mainCardState extends State<mainCard> {
                     String otpCode = firstController.text +
                         secondController.text +
                         thirdController.text +
-                        fourthController.text;
-                    if (otpCode.length == 4) {
+                        fourthController.text +
+                        fifthController.text +
+                        sixthController.text;
+
+                    if (otpCode.length == 6) {
                       try {
                         PhoneAuthCredential credential =
-                            await PhoneAuthProvider.credential(
-                                verificationId: widget.widget.verificationid,
-                                smsCode: otpCode);
-                        UserCredential userCredential = await FirebaseAuth.instance.signInWithCredential(credential);
-                        if(userCredential != null){
-                          print("Otp verification succefully");
+                        PhoneAuthProvider.credential(
+                            verificationId: widget.widget.verificationid,
+                            smsCode: otpCode);
+                        UserCredential userCredential =
+                        await FirebaseAuth.instance
+                            .signInWithCredential(credential);
+
+                        if (userCredential.user != null) {
+                          print("OTP verification successful");
+                          // Proceed to the next screen or home page
                         }
                       } catch (ex) {
-                        print("otp verification error $ex");
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text(
+                                "OTP verification error: $ex")));
                       }
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                              content: Text("Enter the full OTP code")));
                     }
                   },
                   child: const Text(
@@ -200,16 +237,17 @@ class _mainCardState extends State<mainCard> {
                   )),
             ),
           ),
-          Text("Didn't receive OTP? Resend OTP in $secondsRemaining "),
+          Text("Didn't receive OTP? Resend OTP in $secondsRemaining seconds"),
           TextButton(
-              onPressed: () {},
-              child: Text(
-                "Resend OTP",
-                style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 15,
-                    color: enableResend ? Colors.deepPurple : Colors.grey),
-              ))
+            onPressed: enableResend ? resendOtp : null,
+            child: Text(
+              "Resend OTP",
+              style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 15,
+                  color: enableResend ? Colors.deepPurple : Colors.grey),
+            ),
+          ),
         ],
       ),
     );
@@ -224,19 +262,18 @@ class _mainCardState extends State<mainCard> {
   }) {
     return SizedBox(
       height: 65,
-      width: 60,
+      width: 50,
       child: TextField(
         controller: controller,
         focusNode: focusNode,
         onChanged: (value) {
           if (value.length == 1) {
             flag[flagIndex] = true;
-            if (nextFocusNode != null)
+            if (nextFocusNode != null) {
               FocusScope.of(context).requestFocus(nextFocusNode);
-          } else if (value.length == 0) {
-            flag[flagIndex] = false;
-            if (prevFocusNode != null)
-              FocusScope.of(context).requestFocus(prevFocusNode);
+            }
+          } else if (value.isEmpty && prevFocusNode != null) {
+            FocusScope.of(context).requestFocus(prevFocusNode);
           }
           setState(() {});
         },
@@ -260,9 +297,9 @@ class _mainCardState extends State<mainCard> {
             borderRadius: BorderRadius.circular(12),
             borderSide: flag[flagIndex]
                 ? BorderSide(
-                    color: const Color(0xff32357C).withOpacity(0.8), width: 0)
+                color: const Color(0xff32357C).withOpacity(0.8), width: 0)
                 : BorderSide(
-                    color: Colors.deepPurple.withOpacity(0.8), width: 3),
+                color: Colors.deepPurple.withOpacity(0.8), width: 3),
           ),
         ),
       ),

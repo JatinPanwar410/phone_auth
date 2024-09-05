@@ -17,7 +17,10 @@ import 'package:flutter/foundation.dart'
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
-      return web;
+      throw UnsupportedError(
+        'DefaultFirebaseOptions have not been configured for web - '
+        'you can reconfigure this by running the FlutterFire CLI again.',
+      );
     }
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
@@ -25,9 +28,15 @@ class DefaultFirebaseOptions {
       case TargetPlatform.iOS:
         return ios;
       case TargetPlatform.macOS:
-        return macos;
+        throw UnsupportedError(
+          'DefaultFirebaseOptions have not been configured for macos - '
+          'you can reconfigure this by running the FlutterFire CLI again.',
+        );
       case TargetPlatform.windows:
-        return windows;
+        throw UnsupportedError(
+          'DefaultFirebaseOptions have not been configured for windows - '
+          'you can reconfigure this by running the FlutterFire CLI again.',
+        );
       case TargetPlatform.linux:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for linux - '
@@ -40,50 +49,20 @@ class DefaultFirebaseOptions {
     }
   }
 
-  static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyCAcEn9LvB-T8IqMNlEiGVpevJ_wqhnZrI',
-    appId: '1:386319475258:web:1f820944bc0e78064e8b03',
-    messagingSenderId: '386319475258',
-    projectId: 'otpverification-66200',
-    authDomain: 'otpverification-66200.firebaseapp.com',
-    storageBucket: 'otpverification-66200.appspot.com',
-    measurementId: 'G-7E3Z0Q778T',
-  );
-
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyBNIikIB-hf60xHMCVCeferY9Q1sEe9ya8',
-    appId: '1:386319475258:android:5200b8acd2ed46404e8b03',
-    messagingSenderId: '386319475258',
-    projectId: 'otpverification-66200',
-    storageBucket: 'otpverification-66200.appspot.com',
+    apiKey: 'AIzaSyDLYHnZl6goWImqyRH7fMbWCV9oqJgGXdg',
+    appId: '1:1077169648847:android:3f53a8637e4de40cb6b3ba',
+    messagingSenderId: '1077169648847',
+    projectId: 'otpauth-36829',
+    storageBucket: 'otpauth-36829.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyDImM2EIV5Wpm1tY0ZQinEFfsxqY4_WyLU',
-    appId: '1:386319475258:ios:7938883c4a9277024e8b03',
-    messagingSenderId: '386319475258',
-    projectId: 'otpverification-66200',
-    storageBucket: 'otpverification-66200.appspot.com',
+    apiKey: 'AIzaSyAVRYCgWisaaPi6zC9yUwdKdIlks2apFR4',
+    appId: '1:1077169648847:ios:800db64db1d78b0fb6b3ba',
+    messagingSenderId: '1077169648847',
+    projectId: 'otpauth-36829',
+    storageBucket: 'otpauth-36829.appspot.com',
     iosBundleId: 'com.example.otpAuthentication',
   );
-
-  static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyDImM2EIV5Wpm1tY0ZQinEFfsxqY4_WyLU',
-    appId: '1:386319475258:ios:7938883c4a9277024e8b03',
-    messagingSenderId: '386319475258',
-    projectId: 'otpverification-66200',
-    storageBucket: 'otpverification-66200.appspot.com',
-    iosBundleId: 'com.example.otpAuthentication',
-  );
-
-  static const FirebaseOptions windows = FirebaseOptions(
-    apiKey: 'AIzaSyCAcEn9LvB-T8IqMNlEiGVpevJ_wqhnZrI',
-    appId: '1:386319475258:web:36050d78a284abf34e8b03',
-    messagingSenderId: '386319475258',
-    projectId: 'otpverification-66200',
-    authDomain: 'otpverification-66200.firebaseapp.com',
-    storageBucket: 'otpverification-66200.appspot.com',
-    measurementId: 'G-ZCS65KZDH2',
-  );
-
 }
